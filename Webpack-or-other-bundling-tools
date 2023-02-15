@@ -1,0 +1,26 @@
+//shared module
+
+let counter = 0;
+
+export function incrementCounter() {
+  counter++;
+}
+
+export function getCounter() {
+  return counter;
+}
+
+
+//MFE1
+import { incrementCounter, getCounter } from 'shared-module';
+
+// Use the shared module
+incrementCounter();
+console.log('Counter in Microfrontend 1:', getCounter());
+
+
+//MFE2
+import { getCounter } from 'shared-module';
+
+// Use the shared module
+console.log('Counter in Microfrontend 2:', getCounter());
