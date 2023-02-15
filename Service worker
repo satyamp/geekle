@@ -1,0 +1,30 @@
+//Service worker
+
+let sharedState = {};
+
+self.addEventListener('message', event => {
+  if (event.data.type === 'SET_STATE') {
+    sharedState = event.data.state;
+  }
+});
+
+self.addEventListener('fetch', event => {
+  // Access shared state
+  console.log(sharedState);
+});
+
+
+
+
+//Web page
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(registration => {
+      // Send shared state to service worker
+      registration.active.postMessage({
+        type: 'SET_STATE',
+        state: { foo: 'bar' }
+      });
+    });
+}
