@@ -1,0 +1,44 @@
+//message bus
+
+const subscribers = {};
+
+// Subscribe to an event
+function subscribe(event, callback) {
+  if (!subscribers[event]) {
+    subscribers[event] = [];
+  }
+  subscribers[event].push(callback);
+}
+
+// Publish an event
+function publish(event, data) {
+  if (subscribers[event]) {
+    subscribers[event].forEach(callback => callback(data));
+  }
+}
+
+
+//MFE1
+
+import { subscribe, publish } from 'message-bus';
+
+// Subscribe to an event
+subscribe('COUNTER_CHANGED', counter => {
+  console.log('Counter changed:', counter);
+});
+
+// Update the counter and publish an event
+let counter = 0;
+setInterval(() => {
+  counter++;
+  publish('COUNTER_CHANGED', counter);
+}, 1000);
+
+
+//MFE2
+import { subscribe } from 'message-bus';
+
+// Subscribe to the same event
+subscribe('COUNTER_CHANGED', counter => {
+  console.log('Counter changed in Microfrontend 2:', counter);
+});
