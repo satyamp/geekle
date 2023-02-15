@@ -1,0 +1,105 @@
+//shared gRPC service
+syntax = "proto3";
+
+package example;
+
+service Counter {
+  rpc IncrementCounter (google.protobuf.Empty) returns (google.protobuf.Empty);
+  rpc GetCounter (google.protobuf.Empty) returns (CounterResponse);
+}
+
+message CounterResponse {
+  int32 counter = 1;
+}
+
+//Microfrontend 1 gRPC client:
+const grpc = require('grpc');
+const protoLoader = require('@grpc/proto-loader');
+
+const packageDefinition = protoLoader.loadSync('counter.proto', {
+  keepCase: true,
+  longs: String,
+  enums: String,
+  defaults: true,
+  oneofs: true
+});
+const counterProto = grpc.loadPackageDefinition(packageDefinition).example.Counter;
+
+const client = new counterProto('localhost:50051', grpc.credentials.createInsecure());
+
+// Call gRPC methods
+client.incrementCounter({}, (err, response) => {
+  console.log('Counter incremented in Microfrontend 1');
+});
+client.getCounter({}, (err, response) => {
+  console.log('Counter in Microfrontend 1:', response.counter);
+});
+
+
+
+//Microfrontend 2 gRPC client:
+
+const grpc = require('grpc');
+const protoLoader = require('@grpc/proto-loader');
+
+const packageDefinition = protoLoader.loadSync('counter.proto', {
+  keepCase: true,
+  longs: String,
+  enums: String,
+  defaults: true,
+  oneofs: true
+});
+const counterProto = grpc.loadPackageDefinition(packageDefinition).example.Counter;
+
+const client = new counterProto('localhost:50051', grpc.credentials.createInsecure());
+
+// Call gRPC methods
+client.getCounter({}, (err, response) => {
+  console.log('Counter in Microfrontend 2:', response.counter);
+});
+
+
+//Shared GraphQL schema:
+type Query {
+  counter: Int!
+}
+
+type Mutation {
+  incrementCounter: Int!
+}
+
+
+
+//Microfrontend 1 GraphQL client:
+const { ApolloClient, InMemoryCache, gql } = require('@apollo/client');
+
+const client = new ApolloClient({
+  uri: 'http://localhost:4000/',
+  cache: new InMemoryCache()
+});
+
+// Call GraphQL queries and mutations
+client.mutate({
+  mutation: gql`
+    mutation {
+      incrementCounter
+    }
+  `
+}).then(result => {
+  console.log('Counter incremented in Microfrontend 1');
+});
+client.query({
+  query: gql`
+    query {
+      counter
+    }
+  `
+}).then(result => {
+  console.log('Counter in Microfrontend 1:', result.data.counter);
+});
+
+//Microfrontend 2 GraphQL client:
+const { ApolloClient, InMemoryCache, gql } = require('@apollo/client');
+
+const
+
