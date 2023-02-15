@@ -1,43 +1,45 @@
-// Define initial state
+//MFE 1
+
+import { createStore } from 'redux';
+
+// Define the initial state
 const initialState = {
-  counter: 0,
-  todos: []
-}
+  counter: 0
+};
 
-// Define actions
-const INCREMENT_COUNTER = 'INCREMENT_COUNTER';
-const ADD_TODO = 'ADD_TODO';
-
-// Define action creators
-function incrementCounter() {
-  return { type: INCREMENT_COUNTER };
-}
-
-function addTodo(text) {
-  return { type: ADD_TODO, text };
-}
-
-// Define reducer
+// Define the reducer
 function reducer(state = initialState, action) {
   switch (action.type) {
-    case INCREMENT_COUNTER:
+    case 'INCREMENT_COUNTER':
       return { ...state, counter: state.counter + 1 };
-    case ADD_TODO:
-      return { ...state, todos: [...state.todos, { text: action.text }] };
     default:
       return state;
   }
 }
 
-// Create store
-const store = Redux.createStore(reducer);
+// Create the store
+const store = createStore(reducer);
 
-// Subscribe to store updates
-store.subscribe(() => {
-  console.log('Current state:', store.getState());
+// Expose the store to other microfrontends
+window.microfrontend1Store = store;
+
+
+
+
+//MFE2
+
+import { createStore } from 'redux';
+
+// Create the store
+const store = createStore((state = {}) => state);
+
+// Subscribe to the store of Microfrontend 1
+window.microfrontend1Store.subscribe(() => {
+  const microfrontend1State = window.microfrontend1Store.getState();
+  // Do something with the state
+  console.log('Microfrontend 1 state:', microfrontend1State);
 });
 
-// Dispatch actions to update state
-store.dispatch(incrementCounter());
-store.dispatch(addTodo('Buy milk'));
-store.dispatch(addTodo('Walk the dog'));
+// Expose the store to other microfrontends
+window.microfrontend2Store = store;
+
