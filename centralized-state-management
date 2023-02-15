@@ -1,0 +1,43 @@
+// Define initial state
+const initialState = {
+  counter: 0,
+  todos: []
+}
+
+// Define actions
+const INCREMENT_COUNTER = 'INCREMENT_COUNTER';
+const ADD_TODO = 'ADD_TODO';
+
+// Define action creators
+function incrementCounter() {
+  return { type: INCREMENT_COUNTER };
+}
+
+function addTodo(text) {
+  return { type: ADD_TODO, text };
+}
+
+// Define reducer
+function reducer(state = initialState, action) {
+  switch (action.type) {
+    case INCREMENT_COUNTER:
+      return { ...state, counter: state.counter + 1 };
+    case ADD_TODO:
+      return { ...state, todos: [...state.todos, { text: action.text }] };
+    default:
+      return state;
+  }
+}
+
+// Create store
+const store = Redux.createStore(reducer);
+
+// Subscribe to store updates
+store.subscribe(() => {
+  console.log('Current state:', store.getState());
+});
+
+// Dispatch actions to update state
+store.dispatch(incrementCounter());
+store.dispatch(addTodo('Buy milk'));
+store.dispatch(addTodo('Walk the dog'));
