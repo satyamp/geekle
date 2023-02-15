@@ -1,4 +1,6 @@
 # geekle
 
-sharing state and code in microfrontend
+Optimal communication between microfrontends and cross-microfrontend optimization
+
+
 
